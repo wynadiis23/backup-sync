@@ -56,19 +56,40 @@ def compress(files):
 
 #     if ()
 
-def check_compressed_file(file):
-    comp_file = 
+# def check_compressed_file(file):
+#     comp_file = 
 
 def tlf_logs(tlf_content):
     # check if files are already compressed before, if files have been compressed, there is no need to compress again.
+    print(tlf_content)
     if (os.path.isfile('./two_latest_files.txt')):
+        print('replace tlf txt')
         # there is a file. check it first. if yes go replace the current content
-        
+        tlf_old = []
+        with open('./two_latest_files.txt') as file:
+            tlf_old = [line.strip() for line in file]
+        print(tlf_old)
+        # compare the list, if not same, then continue, else do not archive and compress
+        tlf_content.sort()
+        tlf_old.sort()
+
+        if tlf_old == tlf_content:
+            print('the list are same, do not archiving and compress')
+        else:
+            print('the list are not same, continue archiving and compressing')
+
+        return 0
 
     else:
+        print('create new tlf txt')
         # no exact file, create it
         tlf_cr = open('./two_latest_files.txt', 'w+')
+        for i in tlf_content:
+            tlf_cr.write(i)
+            tlf_cr.write('\n')
         tlf_cr.close()
+
+        return 0
 
 
 def check_latest_files():
@@ -94,7 +115,7 @@ def check_latest_files():
         # check if the tlf log has been created, if not, create it. 
         # if yes then compare it with the latest ltf, if same do not do the archive and compress, if not replace the current content and continue the program
         bool_latest_files = tlf_logs(two_latest_files)
-        if (bool_latest_files):
+        if (bool(bool_latest_files)):
             # continue to archive and compress
             print('\ntwo latest files are:')
             for i in two_latest_files:
@@ -156,5 +177,5 @@ def main():
 
 
 
-if __name__="__main__":
+if __name__=="__main__":
     main()
