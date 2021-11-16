@@ -41,10 +41,13 @@ def compress(files):
 
     print('start compressing')
     zipName = 'final-'+curr_date+'-'+current_time+'.zip'
+    i = 1
     with zipfile.ZipFile(zipName, 'w') as zipF:
         for file in files:
+            print(f'[{i}/{len(files)}]')
             print('compressing ' + file)
             zipF.write(file, compress_type=zipfile.ZIP_LZMA)
+            i += 1
         zipF.close()
         print('compress and archiving complete')
 
@@ -70,26 +73,42 @@ def tlf_logs(tlf_content):
             tlf_old = [line.strip() for line in file]
         print(tlf_old)
         # compare the list, if not same, then continue, else do not archive and compress
-        tlf_content.sort()
-        tlf_old.sort()
+        # tlf_content.sort()
+        # tlf_old.sort()
 
-        if tlf_old == tlf_content:
-            print('the list are same, do not archiving and compress')
+        # if 1 are not same, then it is not identical
+        # if we do it like this, there is a chance for a file to compressed multiple times.
+        # if tlf_old == tlf_content:
+        #     print('the list are same, do not archiving and compress')
+        # else:
+        #     print('the list are not same, continue archiving and compressing')
+
+        # instead of matching all the list, let's find a matching string
+        # so if there is a matching string between the list, do not do the archiving and compressing.
+        # if there is no matching string, do the archiving and compressing
+        # like this, a file will not compressed multiple times
+        if (bool(set(tlf_content).intersection(tlf_old))):
+            # there is a same string
+            print('one of the file is already compressed, please check it')
+
+            return 0 # return false, or finish the program
         else:
-            print('the list are not same, continue archiving and compressing')
+            # no same string
 
-        return 0
+            return 1 # return true
+            print('losog')
 
     else:
         print('create new tlf txt')
         # no exact file, create it
+        # and do archiving and compressing
         tlf_cr = open('./two_latest_files.txt', 'w+')
         for i in tlf_content:
             tlf_cr.write(i)
             tlf_cr.write('\n')
         tlf_cr.close()
 
-        return 0
+        return 1 # return true
 
 
 def check_latest_files():
