@@ -1,7 +1,7 @@
 import os
 import zipfile
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 import glob
 import configparser
 
@@ -49,6 +49,7 @@ def compress(files):
             zipF.write(file, compress_type=zipfile.ZIP_LZMA)
             i += 1
         zipF.close()
+        replace_tlf_log(files)
         print('compress and archiving complete')
 
     finish()
@@ -62,23 +63,26 @@ def compress(files):
 # def check_compressed_file(file):
 #     comp_file = 
 
-def tlf_logs(tlf_content):
+def read_tlf_old():
+    tlf_old = []
+    with open('./two_latest_files.txt') as file:
+        tlf_old = [line.strip() for line in file]
+    return tlf_old
+
+def tlf_logs(tlf_new):
     # check if files are already compressed before, if files have been compressed, there is no need to compress again.
-    print(tlf_content)
+    print(tlf_new)
     if (os.path.isfile('./two_latest_files.txt')):
         print('replace tlf txt')
         # there is a file. check it first. if yes go replace the current content
-        tlf_old = []
-        with open('./two_latest_files.txt') as file:
-            tlf_old = [line.strip() for line in file]
-        print(tlf_old)
+        tlf_old = read_tlf_old()
         # compare the list, if not same, then continue, else do not archive and compress
-        # tlf_content.sort()
+        # tlf_new.sort()
         # tlf_old.sort()
 
         # if 1 are not same, then it is not identical
         # if we do it like this, there is a chance for a file to compressed multiple times.
-        # if tlf_old == tlf_content:
+        # if tlf_old == tlf_new:
         #     print('the list are same, do not archiving and compress')
         # else:
         #     print('the list are not same, continue archiving and compressing')
@@ -87,7 +91,7 @@ def tlf_logs(tlf_content):
         # so if there is a matching string between the list, do not do the archiving and compressing.
         # if there is no matching string, do the archiving and compressing
         # like this, a file will not compressed multiple times
-        if (bool(set(tlf_content).intersection(tlf_old))):
+        if (bool(set(tlf_new).intersection(tlf_old))):
             # there is a same string
             print('one of the file is already compressed, please check it')
 
@@ -103,13 +107,35 @@ def tlf_logs(tlf_content):
         # no exact file, create it
         # and do archiving and compressing
         tlf_cr = open('./two_latest_files.txt', 'w+')
-        for i in tlf_content:
+        for i in tlf_new:
             tlf_cr.write(i)
             tlf_cr.write('\n')
         tlf_cr.close()
 
         return 1 # return true
 
+def replace_tlf_log(tlf_new):
+    # this section is buggy as hell. for now
+    print('replacing two latest files txt')
+    tlf_old = read_tlf_old()
+    # Read in the file
+    with open('./two_latest_files.txt', 'r') as file :
+        filedata = file.read()
+
+    # Replace the target string
+    x = 0
+    for i in tlf_new:
+        print(tlf_old[x])
+        print(i)
+        filedata = filedata.replace(tlf_old[x], tlf_new[x])
+        x += 1
+
+    # Write the file out again
+    with open('./two_latest_files.txt', 'w') as file:
+        file.write(filedata)
+
+    print('replacing complete')
+    return 1 # no validation :)))))
 
 def check_latest_files():
     # files = os.listdir(rootDir)
