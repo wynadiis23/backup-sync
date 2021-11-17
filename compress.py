@@ -5,10 +5,11 @@ from datetime import datetime
 import glob
 import configparser
 import shutil # copy file
+import logging # logging
 
 """
  TODO:
- 1. Make a log file 
+ 1. Make a log file | in progress
  2. Move compressed file to the sync folder | completed
  3. (optional) create a notification 
 """
@@ -16,6 +17,31 @@ import shutil # copy file
 
 def finish():
     input("you can press any key to close this window!")
+
+def log_insert(file, message, level):
+    # basic configuration
+    format_log = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    log_ = logging.FileHandler(file)
+    log_.setFormatter(format_log)
+
+    logger = logging.getLogger(file)
+    logger.setLevel(level)
+
+    if not logger.handlers:
+        logger.addHandler(log_)
+        # check logging type
+        if (level == logging.INFO):
+            logger.info(message)
+        if (level == logging.ERROR):
+            logger.error(message)
+        if (level == logging.WARNING):
+            logger.warning(message)
+
+    log_.close()
+    logger.removeHandler(log_)
+
+    return
+
 
 #backup-20210603
 def get_time():
@@ -46,7 +72,9 @@ def compress(files):
     with zipfile.ZipFile(zipName, 'w') as zipF:
         for file in files:
             print(f'[{i}/{len(files)}]')
-            print('compressing ' + file)
+            log_txt = f'compressing {file}' 
+            print(log_txt)
+            log_insert('./files.log', log_txt, logging.INFO)
             zipF.write(file, compress_type=zipfile.ZIP_LZMA)
             i += 1
         zipF.close()
@@ -233,16 +261,14 @@ def move_final_to_sync(zipName):
         # check if the file was successfully copied
         if (bool(os.path.isfile(b))):
             # if file was successfully moved, delete the compressed on the datastore directory
-            print('the file was successfully copied!')
+            print('SUCCESS, the file was successfully copied!')
             
             print('deleting compressed file in working dir')
             os.remove(f'./{zipName}')
         else:
             print('ERROR, compressed file not found!')
-
-        print('files nya ada bos')
     else:
-        print('enggak ada bos')
+        print('ERROR, zipfile not found!')
 
 
 def main():
