@@ -18,7 +18,26 @@ import logging # logging
 def finish():
     input("you can press any key to close this window!")
 
+
+def validate_config():
+    config = configparser.ConfigParser()
+    config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
+
+    # print(config.items('user_info'))
+    for (each_key, each_val) in config.items('user_info'):
+        # print(each_val)
+        if bool(os.path.isdir(each_val)):
+            log_txt = f'directory {each_val} is present' 
+            # print(log_txt)
+            log_insert('./files.log', log_txt, logging.INFO)
+        else:
+            log_txt = f'no such file or directory: {each_val}' 
+            # print(log_txt)
+            log_insert('./files.log', log_txt, logging.ERROR)
+            exit()
+
 def log_insert(file, message, level):
+    print(message)
     # basic configuration
     format_log = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
     log_ = logging.FileHandler(file)
@@ -73,7 +92,7 @@ def compress(files):
         for file in files:
             print(f'[{i}/{len(files)}]')
             log_txt = f'compressing {file}' 
-            print(log_txt)
+            # print(log_txt)
             log_insert('./files.log', log_txt, logging.INFO)
             zipF.write(file, compress_type=zipfile.ZIP_LZMA)
             i += 1
@@ -84,7 +103,8 @@ def compress(files):
     # move final backup to sync folder
     move_final_to_sync(zipName)
 
-    print('compress and archiving complete')
+    log_txt = 'compress and archiving complete!'
+    log_insert('./files.log', log_txt, logging.INFO)
 
     finish()
 
@@ -105,9 +125,11 @@ def read_tlf_old():
 
 def tlf_logs(tlf_new):
     # check if files are already compressed before, if files have been compressed, there is no need to compress again.
-    print(tlf_new)
+    log_txt = f'new tlf are: {tlf_new}'
+    log_insert('./files.log', log_txt, logging.INFO)
     if (os.path.isfile('./two_latest_files.txt')):
-        print('replace tlf txt')
+        log_txt = 'replace tlf txt'
+        log_insert('./files.log', log_txt, logging.INFO)
         # there is a file. check it first. if yes go replace the current content
         tlf_old = read_tlf_old()
         # compare the list, if not same, then continue, else do not archive and compress
@@ -127,17 +149,18 @@ def tlf_logs(tlf_new):
         # like this, a file will not compressed multiple times
         if (bool(set(tlf_new).intersection(tlf_old))):
             # there is a same string
-            print('one of the file is already compressed, please check it')
+            log_txt = 'one of the file is already compressed, please check it'
+            log_insert('./files.log', log_txt, logging.WARNING)
 
             return 0 # return false, or finish the program
         else:
             # no same string
 
             return 1 # return true
-            print('losog')
 
     else:
-        print('create new tlf txt')
+        log_txt = 'create new tlf txt'
+        log_insert('./files.log', log_txt, logging.INFO)
         # no exact file, create it
         # and do archiving and compressing
         tlf_cr = open('./two_latest_files.txt', 'w+')
@@ -149,8 +172,8 @@ def tlf_logs(tlf_new):
         return 1 # return true
 
 def replace_tlf_log(tlf_new):
-    # this section is buggy as hell. for now
-    print('replacing two latest files txt')
+    log_txt = 'replacing two latest files txt'
+    log_insert('./files.log', log_txt, logging.INFO)
     tlf_old = read_tlf_old()
     # Read in the file
     with open('./two_latest_files.txt', 'r') as file :
@@ -169,7 +192,8 @@ def replace_tlf_log(tlf_new):
     with open('./two_latest_files.txt', 'w') as file:
         file.write(filedata)
 
-    print('replacing complete')
+    log_txt = 'replacing complete'
+    log_insert('./files.log', log_txt, logging.INFO)
     return 1 # no validation :)))))
 
 def check_latest_files():
@@ -179,11 +203,14 @@ def check_latest_files():
     curr_date = get_time()
     #testing
     curr_date = "backup-20211116"
+    log_txt = curr_date
+    log_insert('./files.log', log_txt, logging.INFO)
     print('\ncari file latest:')
     files =  sorted(glob.glob(db_dir + '/' + curr_date + '-*'), key=os.path.getmtime)
 
     if not files:
-        print('there is no backup file today!')
+        log_txt = 'there is no backup file today!'
+        log_insert('./files.log', log_txt, logging.WARNING)
 
         finish()
     else:
@@ -197,9 +224,11 @@ def check_latest_files():
         bool_latest_files = tlf_logs(two_latest_files)
         if (bool(bool_latest_files)):
             # continue to archive and compress
-            print('\ntwo latest files are:')
+            log_txt = '\ntwo latest files are:'
+            log_insert('./files.log', log_txt, logging.INFO)
             for i in two_latest_files:
                 print(i)
+                log_insert('./files.log', i, logging.INFO)
             # print(two_latest_files)
             # print(files)
             # print('mamang')
@@ -211,14 +240,17 @@ def check_latest_files():
 def check_config_file():
     # This will check if there is a config file or not. If there is no config file, it will generate it.
     if (os.path.isfile('./config.ini')):
-        print('config file already exist! continue')
+        log_txt = 'config file already exist! continue'
+        log_insert('./files.log', log_txt, logging.INFO)
 
         # continue to check latest file
         check_latest_files()
     else:
         # generate a config file
-        print('config file not found. Program will generate needed files')
-        print('generate config file')
+        log_txt = 'config file not found. Program will generate needed files'
+        log_insert('./files.log', log_txt, logging.INFO)
+        log_txt = 'generate config file'
+        log_insert('./files.log', log_txt, logging.INFO)
         # initialize config parser
         config = configparser.ConfigParser()
 
@@ -236,12 +268,14 @@ def check_config_file():
             config.write(configfile)
 
         if (os.path.isfile('./config.ini')):
-            print('config file successfully generated!\n')
+            log_txt = 'config file successfully generated!\n'
+            log_insert('./files.log', log_txt, logging.INFO)
 
             # continue to check latest file
             check_latest_files()
         else:
-            print('error when generate config file!\n')
+            log_txt = 'error when generate config file!\n'
+            log_insert('./files.log', log_txt, logging.ERROR)
 
 def read_config_file(query):
     # this line is for read configuration file. Please set your db toko root dir on the config.ini file.
@@ -261,20 +295,29 @@ def move_final_to_sync(zipName):
         # check if the file was successfully copied
         if (bool(os.path.isfile(b))):
             # if file was successfully moved, delete the compressed on the datastore directory
-            print('SUCCESS, the file was successfully copied!')
+            log_txt = 'the file was successfully copied!'
+            log_insert('./files.log', log_txt, logging.INFO)
             
-            print('deleting compressed file in working dir')
+            log_txt = 'deleting compressed file in working dir'
+            log_insert('./files.log', log_txt, logging.INFO)
             os.remove(f'./{zipName}')
         else:
-            print('ERROR, compressed file not found!')
+            log_txt = 'compressed file not copied!'
+            log_insert('./files.log', log_txt, logging.ERROR)
     else:
-        print('ERROR, zipfile not found!')
+        log_txt = 'zipfile not found!'
+        log_insert('./files.log', log_txt, logging.ERROR)
 
 
 def main():
+    validate_config()
     check_config_file()
 
 
 
 if __name__=="__main__":
     main()
+# try:
+#     main()
+# except Exception as e:
+#     logging.exception("Unexpected exception! %s",e)
