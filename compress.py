@@ -4,11 +4,12 @@ import time
 from datetime import datetime
 import glob
 import configparser
+import shutil # copy file
 
 """
  TODO:
  1. Make a log file 
- 2. Move compressed file to the sync folder | in progress
+ 2. Move compressed file to the sync folder | completed
  3. (optional) create a notification 
 """
 
@@ -49,8 +50,13 @@ def compress(files):
             zipF.write(file, compress_type=zipfile.ZIP_LZMA)
             i += 1
         zipF.close()
-        replace_tlf_log(files)
-        print('compress and archiving complete')
+    # update two last files txt
+    replace_tlf_log(files)
+
+    # move final backup to sync folder
+    move_final_to_sync(zipName)
+
+    print('compress and archiving complete')
 
     finish()
 
@@ -131,6 +137,7 @@ def replace_tlf_log(tlf_new):
         x += 1
 
     # Write the file out again
+    print(filedata)
     with open('./two_latest_files.txt', 'w') as file:
         file.write(filedata)
 
@@ -216,6 +223,27 @@ def read_config_file(query):
     user_config = user_info[query]
 
     return user_config
+
+def move_final_to_sync(zipName):
+    # check zip files if there a
+    if (os.path.isfile(f'./{zipName}')):
+        # copy zip file to sync folder
+        sync_folder = read_config_file('sync_dir')
+        b = shutil.copy2(f'./{zipName}', sync_folder)
+        # check if the file was successfully copied
+        if (bool(os.path.isfile(b))):
+            # if file was successfully moved, delete the compressed on the datastore directory
+            print('the file was successfully copied!')
+            
+            print('deleting compressed file in working dir')
+            os.remove(f'./{zipName}')
+        else:
+            print('ERROR, compressed file not found!')
+
+        print('files nya ada bos')
+    else:
+        print('enggak ada bos')
+
 
 def main():
     check_config_file()
