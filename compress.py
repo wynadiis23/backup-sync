@@ -1,4 +1,4 @@
-import os
+import os, sys
 import zipfile
 import time
 from datetime import datetime
@@ -14,6 +14,17 @@ import logging # logging
  3. (optional) create a notification 
 """
 
+if getattr(sys, 'frozen', False):
+    # If the application is run as a bundle, the PyInstaller bootloader
+    # extends the sys module by a flag frozen=True and sets the app 
+    # path into variable _MEIPASS'.
+    # application_path = sys._MEIPASS
+    application_path = os.path.dirname(sys.executable)
+    print('run as exe')
+else:
+    print('run as py script')
+    application_path = os.path.dirname(os.path.abspath(__file__))
+
 
 def finish():
     input("you can press any key to close this window!")
@@ -21,34 +32,37 @@ def finish():
 
 def validate_config():
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
+    path_config = os.path.join(application_path, 'config.ini')
+    print(path_config)
+    config.read(path_config)
 
     # print(config.items('user_info'))
     # max err_conf rn is 2, it is depend on items in config file, hardcoded anyway :(
     err_conf = 0
     sync_folder_exist = 0
-    for (each_key, each_val) in config.items('user_info'):
+    print(config.items())
+    for (each_key, each_val) in config.items("user_info"):
         # print(each_val)
         if (each_key == 'sync_dir'):
             if bool(os.path.isdir(each_val)):
                 log_txt = f'directory {each_val} is present' 
                 # print(log_txt)
-                log_insert('./files.log', log_txt, logging.INFO)
+                log_insert('.//files.log', log_txt, logging.INFO)
                 sync_folder_exist = 1
             else:
                 log_txt = f'no such file or directory: {each_val}' 
                 # print(log_txt)
-                log_insert('./files.log', log_txt, logging.ERROR)
+                log_insert('.//files.log', log_txt, logging.ERROR)
                 err_conf += 1
         else:
             if bool(os.path.isdir(each_val)):
                 log_txt = f'directory {each_val} is present' 
                 # print(log_txt)
-                log_insert('./files.log', log_txt, logging.INFO)
+                log_insert('.//files.log', log_txt, logging.INFO)
             else:
                 log_txt = f'no such file or directory: {each_val}' 
                 # print(log_txt)
-                log_insert('./files.log', log_txt, logging.ERROR)
+                log_insert('.//files.log', log_txt, logging.ERROR)
                 err_conf += 1
 
     # check folder sync. i doing this if the error dir is not the sync dir, log file will be copied anyway.
@@ -59,15 +73,17 @@ def validate_config():
         if sync_folder_exist == 0:
             log_txt = 'config file error, please check config file. make sure the directory exist!'
             # print(log_txt)
-            log_insert('./files.log', log_txt, logging.ERROR)
+            log_insert('.//files.log', log_txt, logging.ERROR)
             exit()
         # sync folder exist, write the error log and copy to the sync dir
         else:
             log_txt = 'config file error, please check config file. make sure the directory exist!'
             # print(log_txt)
-            log_insert('./files.log', log_txt, logging.ERROR)
-            copy_log_file('./files.log')
+            log_insert('.//files.log', log_txt, logging.ERROR)
+            copy_log_file('.//files.log')
             exit()
+
+    return
 
 def log_insert(file, message, level):
     print(message)
@@ -107,18 +123,18 @@ def copy_log_file(file):
         b = shutil.copy2(file, sync_folder)
         if (bool(os.path.isfile(b))):
             log_txt = 'files log was successfully copied'
-            log_insert('./files.log', log_txt, logging.INFO)
+            log_insert('.//files.log', log_txt, logging.INFO)
         else:
             log_txt = 'can not copy the files log!'
-            log_insert('./files.log', log_txt, logging.ERROR)
+            log_insert('.//files.log', log_txt, logging.ERROR)
     else:
         b = shutil.copy2(file, sync_folder)
         if (bool(os.path.isfile(b))):
             log_txt = 'files log was successfully copied'
-            log_insert('./files.log', log_txt, logging.INFO)
+            log_insert('.//files.log', log_txt, logging.INFO)
         else:
             log_txt = 'can not copy the files log!'
-            log_insert('./files.log', log_txt, logging.ERROR)
+            log_insert('.//files.log', log_txt, logging.ERROR)
 
     return
 
@@ -154,7 +170,7 @@ def compress(files):
             print(f'[{i}/{len(files)}]')
             log_txt = f'compressing {file}' 
             # print(log_txt)
-            log_insert('./files.log', log_txt, logging.INFO)
+            log_insert('.//files.log', log_txt, logging.INFO)
             zipF.write(file, compress_type=zipfile.ZIP_LZMA)
             i += 1
         zipF.close()
@@ -165,12 +181,12 @@ def compress(files):
     move_final_to_sync(zipName)
 
     log_txt = 'compress and archiving complete!'
-    log_insert('./files.log', log_txt, logging.INFO)
+    log_insert('.//files.log', log_txt, logging.INFO)
 
     log_txt = 'copy files log to sync folder'
-    log_insert('./files.log', log_txt, logging.INFO)
+    log_insert('.//files.log', log_txt, logging.INFO)
 
-    copy_log_file('./files.log')
+    copy_log_file('.//files.log')
 
     finish()
 
@@ -185,17 +201,17 @@ def compress(files):
 
 def read_tlf_old():
     tlf_old = []
-    with open('./two_latest_files.txt') as file:
+    with open('.//two_latest_files.txt') as file:
         tlf_old = [line.strip() for line in file]
     return tlf_old
 
 def tlf_logs(tlf_new):
     # check if files are already compressed before, if files have been compressed, there is no need to compress again.
     log_txt = f'new tlf are: {tlf_new}'
-    log_insert('./files.log', log_txt, logging.INFO)
-    if (os.path.isfile('./two_latest_files.txt')):
+    log_insert('.//files.log', log_txt, logging.INFO)
+    if (os.path.isfile('.//two_latest_files.txt')):
         log_txt = 'replace tlf txt'
-        log_insert('./files.log', log_txt, logging.INFO)
+        log_insert('.//files.log', log_txt, logging.INFO)
         # there is a file. check it first. if yes go replace the current content
         tlf_old = read_tlf_old()
         # compare the list, if not same, then continue, else do not archive and compress
@@ -216,8 +232,8 @@ def tlf_logs(tlf_new):
         if (bool(set(tlf_new).intersection(tlf_old))):
             # there is a same string
             log_txt = 'one of the file is already compressed, please check it'
-            log_insert('./files.log', log_txt, logging.WARNING)
-            copy_log_file('./files.log')
+            log_insert('.//files.log', log_txt, logging.WARNING)
+            copy_log_file('.//files.log')
 
             return 0 # return false, or finish the program
         else:
@@ -227,10 +243,10 @@ def tlf_logs(tlf_new):
 
     else:
         log_txt = 'create new tlf txt'
-        log_insert('./files.log', log_txt, logging.INFO)
+        log_insert('.//files.log', log_txt, logging.INFO)
         # no exact file, create it
         # and do archiving and compressing
-        tlf_cr = open('./two_latest_files.txt', 'w+')
+        tlf_cr = open('.//two_latest_files.txt', 'w+')
         for i in tlf_new:
             tlf_cr.write(i)
             tlf_cr.write('\n')
@@ -240,10 +256,10 @@ def tlf_logs(tlf_new):
 
 def replace_tlf_log(tlf_new):
     log_txt = 'replacing two latest files txt'
-    log_insert('./files.log', log_txt, logging.INFO)
+    log_insert('.//files.log', log_txt, logging.INFO)
     tlf_old = read_tlf_old()
     # Read in the file
-    with open('./two_latest_files.txt', 'r') as file :
+    with open('.//two_latest_files.txt', 'r') as file :
         filedata = file.read()
 
     # Replace the target string
@@ -256,11 +272,11 @@ def replace_tlf_log(tlf_new):
 
     # Write the file out again
     print(filedata)
-    with open('./two_latest_files.txt', 'w') as file:
+    with open('.//two_latest_files.txt', 'w') as file:
         file.write(filedata)
 
     log_txt = 'replacing complete'
-    log_insert('./files.log', log_txt, logging.INFO)
+    log_insert('.//files.log', log_txt, logging.INFO)
     return 1 # no validation :)))))
 
 def check_latest_files():
@@ -271,14 +287,14 @@ def check_latest_files():
     #testing
     curr_date = "backup-20211116"
     log_txt = curr_date
-    log_insert('./files.log', log_txt, logging.INFO)
+    log_insert('.//files.log', log_txt, logging.INFO)
     print('\ncari file latest:')
     files =  sorted(glob.glob(db_dir + '/' + curr_date + '-*'), key=os.path.getmtime)
 
     if not files:
         log_txt = 'there is no backup file today!'
-        log_insert('./files.log', log_txt, logging.WARNING)
-        copy_log_file('./files.log')
+        log_insert('.//files.log', log_txt, logging.WARNING)
+        copy_log_file('.//files.log')
 
         finish()
     else:
@@ -293,10 +309,10 @@ def check_latest_files():
         if (bool(bool_latest_files)):
             # continue to archive and compress
             log_txt = '\ntwo latest files are:'
-            log_insert('./files.log', log_txt, logging.INFO)
+            log_insert('.//files.log', log_txt, logging.INFO)
             for i in two_latest_files:
                 print(i)
-                log_insert('./files.log', i, logging.INFO)
+                log_insert('.//files.log', i, logging.INFO)
             # print(two_latest_files)
             # print(files)
             # print('mamang')
@@ -307,9 +323,9 @@ def check_latest_files():
 
 def check_config_file():
     # This will check if there is a config file or not. If there is no config file, it will generate it.
-    if (os.path.isfile('./config.ini')):
+    if (os.path.isfile('.//config.ini')):
         log_txt = 'config file already exist! continue'
-        log_insert('./files.log', log_txt, logging.INFO)
+        log_insert('.//files.log', log_txt, logging.INFO)
 
         # continue to check latest file
         validate_config()
@@ -317,9 +333,9 @@ def check_config_file():
     else:
         # generate a config file
         log_txt = 'config file not found. Program will generate needed files'
-        log_insert('./files.log', log_txt, logging.INFO)
+        log_insert('.//files.log', log_txt, logging.INFO)
         log_txt = 'generate config file'
-        log_insert('./files.log', log_txt, logging.INFO)
+        log_insert('.//files.log', log_txt, logging.INFO)
         # initialize config parser
         config = configparser.ConfigParser()
 
@@ -333,25 +349,27 @@ def check_config_file():
         config.set('user_info', 'sync_dir', input_sync_dir)
 
         # Write the new structure to the new file
-        with open(r"./config.ini", 'w') as configfile:
+        with open(r".//config.ini", 'w') as configfile:
             config.write(configfile)
 
-        if (os.path.isfile('./config.ini')):
+        if (os.path.isfile('.//config.ini')):
             log_txt = 'config file successfully generated!\n'
-            log_insert('./files.log', log_txt, logging.INFO)
+            log_insert('.//files.log', log_txt, logging.INFO)
 
             # continue to check latest file
             check_latest_files()
         else:
             log_txt = 'error when generate config file!\n'
-            log_insert('./files.log', log_txt, logging.ERROR)
-            copy_log_file('./files.log')
+            log_insert('.//files.log', log_txt, logging.ERROR)
+            copy_log_file('.//files.log')
             exit()
 
 def read_config_file(query):
     # this line is for read configuration file. Please set your db toko root dir on the config.ini file.
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
+    path_config = os.path.join(application_path, 'config.ini')
+    # print(repr(path_config))
+    config.read(path_config)
     user_info = config['user_info']
     user_config = user_info[query]
 
@@ -359,28 +377,28 @@ def read_config_file(query):
 
 def move_final_to_sync(zipName):
     # check zip files if there a
-    if (os.path.isfile(f'./{zipName}')):
+    if (os.path.isfile(f'.//{zipName}')):
         # copy zip file to sync folder
         sync_folder = read_config_file('sync_dir')
-        b = shutil.copy2(f'./{zipName}', sync_folder)
+        b = shutil.copy2(f'.//{zipName}', sync_folder)
         # check if the file was successfully copied
         if (bool(os.path.isfile(b))):
             # if file was successfully moved, delete the compressed on the datastore directory
             log_txt = 'the file was successfully copied!'
-            log_insert('./files.log', log_txt, logging.INFO)
+            log_insert('.//files.log', log_txt, logging.INFO)
             
             log_txt = 'deleting compressed file in working dir'
-            log_insert('./files.log', log_txt, logging.INFO)
-            os.remove(f'./{zipName}')
+            log_insert('.//files.log', log_txt, logging.INFO)
+            os.remove(f'.//{zipName}')
         else:
             log_txt = 'compressed file not copied!'
-            log_insert('./files.log', log_txt, logging.ERROR)
-            copy_log_file('./files.log')
+            log_insert('.//files.log', log_txt, logging.ERROR)
+            copy_log_file('.//files.log')
             exit()
     else:
         log_txt = 'zipfile not found!'
-        log_insert('./files.log', log_txt, logging.ERROR)
-        copy_log_file('./files.log')
+        log_insert('.//files.log', log_txt, logging.ERROR)
+        copy_log_file('.//files.log')
         exit()
 
 

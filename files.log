@@ -18,3 +18,109 @@ two latest files are:
 2021-11-18 10:40:44,521 INFO compress and archiving complete!
 2021-11-18 10:40:44,523 INFO copy files log to sync folder
 2021-11-18 10:40:44,528 INFO files log was successfully copied
+2021-11-18 11:22:51,937 INFO config file already exist! continue
+2021-11-18 11:22:51,948 INFO directory D:\MMAL-L1 is present
+2021-11-18 11:22:51,949 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 11:22:51,951 INFO backup-20211116
+2021-11-18 11:22:51,954 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 11:22:51,955 INFO replace tlf txt
+2021-11-18 11:22:51,962 WARNING one of the file is already compressed, please check it
+2021-11-18 11:22:51,967 INFO files log was successfully copied
+2021-11-18 11:23:58,943 INFO config file already exist! continue
+2021-11-18 11:26:10,038 INFO config file already exist! continue
+2021-11-18 11:26:10,044 INFO directory D:\MMAL-L1 is present
+2021-11-18 11:26:10,046 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 11:26:10,050 INFO backup-20211116
+2021-11-18 11:26:10,057 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 11:26:10,061 INFO replace tlf txt
+2021-11-18 11:26:10,063 WARNING one of the file is already compressed, please check it
+2021-11-18 11:26:10,069 INFO files log was successfully copied
+2021-11-18 11:26:38,453 INFO config file already exist! continue
+2021-11-18 11:26:38,459 INFO directory D:\MMAL-L1 is present
+2021-11-18 11:26:38,460 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 11:26:38,463 INFO backup-20211116
+2021-11-18 11:26:38,466 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 11:26:38,467 INFO replace tlf txt
+2021-11-18 11:26:38,468 WARNING one of the file is already compressed, please check it
+2021-11-18 11:26:38,473 INFO files log was successfully copied
+2021-11-18 11:37:31,309 INFO config file already exist! continue
+2021-11-18 11:37:31,315 INFO directory D:\MMAL-L1 is present
+2021-11-18 11:37:31,316 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 11:37:31,318 INFO backup-20211116
+2021-11-18 11:37:31,325 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 11:37:31,326 INFO replace tlf txt
+2021-11-18 11:37:31,327 WARNING one of the file is already compressed, please check it
+2021-11-18 11:37:31,331 INFO files log was successfully copied
+2021-11-18 11:37:50,981 INFO config file already exist! continue
+2021-11-18 11:37:50,988 INFO directory D:\MMAL-L1 is present
+2021-11-18 11:37:50,989 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 11:37:50,991 INFO backup-20211116
+2021-11-18 11:37:50,994 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 11:37:50,995 INFO replace tlf txt
+2021-11-18 11:37:50,996 WARNING one of the file is already compressed, please check it
+2021-11-18 11:37:51,000 INFO files log was successfully copied
+2021-11-18 11:46:08,731 INFO config file already exist! continue
+2021-11-18 11:46:45,821 INFO config file already exist! continue
+2021-11-18 11:46:45,826 INFO directory D:\MMAL-L1 is present
+2021-11-18 11:46:45,827 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 11:46:45,830 INFO backup-20211116
+2021-11-18 11:46:45,835 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 11:46:45,836 INFO replace tlf txt
+2021-11-18 11:46:45,837 WARNING one of the file is already compressed, please check it
+2021-11-18 11:46:45,841 INFO files log was successfully copied
+2021-11-18 11:51:42,621 INFO config file already exist! continue
+2021-11-18 11:51:42,625 INFO directory D:\MMAL-L1 is present
+2021-11-18 11:51:42,626 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 11:51:42,629 INFO backup-20211116
+2021-11-18 11:51:42,632 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 11:51:42,633 INFO replace tlf txt
+2021-11-18 11:51:42,635 WARNING one of the file is already compressed, please check it
+2021-11-18 11:51:42,640 INFO files log was successfully copied
+2021-11-18 11:59:46,774 INFO config file already exist! continue
+2021-11-18 11:59:46,780 INFO directory D:\MMAL-L1 is present
+2021-11-18 11:59:46,781 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 11:59:46,783 INFO backup-20211116
+2021-11-18 11:59:46,785 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 11:59:46,786 INFO replace tlf txt
+2021-11-18 11:59:46,787 WARNING one of the file is already compressed, please check it
+2021-11-18 11:59:46,790 INFO files log was successfully copied
+2021-11-18 12:06:01,742 INFO config file already exist! continue
+2021-11-18 12:06:01,749 INFO directory D:\MMAL-L1 is present
+2021-11-18 12:06:01,750 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 12:06:01,754 INFO backup-20211116
+2021-11-18 12:06:01,758 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 12:06:01,759 INFO replace tlf txt
+2021-11-18 12:06:01,761 WARNING one of the file is already compressed, please check it
+2021-11-18 12:06:01,765 INFO files log was successfully copied
+2021-11-18 13:01:11,955 INFO config file already exist! continue
+2021-11-18 13:01:11,992 INFO directory D:\MMAL-L1 is present
+2021-11-18 13:01:11,993 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 13:01:11,996 INFO backup-20211116
+2021-11-18 13:01:11,999 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 13:01:12,000 INFO replace tlf txt
+2021-11-18 13:01:12,043 WARNING one of the file is already compressed, please check it
+2021-11-18 13:01:12,086 INFO files log was successfully copied
+2021-11-18 13:01:17,042 INFO config file already exist! continue
+2021-11-18 13:01:17,048 INFO directory D:\MMAL-L1 is present
+2021-11-18 13:01:17,049 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 13:01:17,052 INFO backup-20211116
+2021-11-18 13:01:17,055 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 13:01:17,056 INFO replace tlf txt
+2021-11-18 13:01:17,058 WARNING one of the file is already compressed, please check it
+2021-11-18 13:01:17,062 INFO files log was successfully copied
+2021-11-18 13:02:29,183 INFO config file already exist! continue
+2021-11-18 13:02:29,190 INFO directory D:\MMAL-L1 is present
+2021-11-18 13:02:29,191 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 13:02:29,194 INFO backup-20211116
+2021-11-18 13:02:29,196 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 13:02:29,196 INFO replace tlf txt
+2021-11-18 13:02:29,197 WARNING one of the file is already compressed, please check it
+2021-11-18 13:02:29,201 INFO files log was successfully copied
+2021-11-18 13:40:42,339 INFO config file already exist! continue
+2021-11-18 13:40:42,363 INFO directory D:\MMAL-L1 is present
+2021-11-18 13:40:42,366 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-18 13:40:42,370 INFO backup-20211116
+2021-11-18 13:40:42,374 INFO new tlf are: ['D:\\MMAL-L1\\backup-20211116-081010', 'D:\\MMAL-L1\\backup-20211116-075646']
+2021-11-18 13:40:42,376 INFO replace tlf txt
+2021-11-18 13:40:42,377 WARNING one of the file is already compressed, please check it
+2021-11-18 13:40:42,384 INFO files log was successfully copied
