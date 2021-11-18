@@ -9,7 +9,7 @@ import logging # logging
 
 """
  TODO:
- 1. Make a log file | in progress
+ 1. Make a log file | in progress > move log file to sync folder, check the old one, if it is there, then delete it, copy the new one
  2. Move compressed file to the sync folder | completed
  3. (optional) create a notification 
 """
@@ -24,16 +24,49 @@ def validate_config():
     config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
 
     # print(config.items('user_info'))
+    # max err_conf rn is 2, it is depend on items in config file, hardcoded anyway :(
+    err_conf = 0
+    sync_folder_exist = 0
     for (each_key, each_val) in config.items('user_info'):
         # print(each_val)
-        if bool(os.path.isdir(each_val)):
-            log_txt = f'directory {each_val} is present' 
-            # print(log_txt)
-            log_insert('./files.log', log_txt, logging.INFO)
+        if (each_key == 'sync_dir'):
+            if bool(os.path.isdir(each_val)):
+                log_txt = f'directory {each_val} is present' 
+                # print(log_txt)
+                log_insert('./files.log', log_txt, logging.INFO)
+                sync_folder_exist = 1
+            else:
+                log_txt = f'no such file or directory: {each_val}' 
+                # print(log_txt)
+                log_insert('./files.log', log_txt, logging.ERROR)
+                err_conf += 1
         else:
-            log_txt = f'no such file or directory: {each_val}' 
+            if bool(os.path.isdir(each_val)):
+                log_txt = f'directory {each_val} is present' 
+                # print(log_txt)
+                log_insert('./files.log', log_txt, logging.INFO)
+            else:
+                log_txt = f'no such file or directory: {each_val}' 
+                # print(log_txt)
+                log_insert('./files.log', log_txt, logging.ERROR)
+                err_conf += 1
+
+    # check folder sync. i doing this if the error dir is not the sync dir, log file will be copied anyway.
+    # if the sync dir is not persist/error exit will be the way, please check your config file
+
+    if err_conf != 0:
+        # sync folder doest not exist, write error log and exit
+        if sync_folder_exist == 0:
+            log_txt = 'config file error, please check config file. make sure the directory exist!'
             # print(log_txt)
             log_insert('./files.log', log_txt, logging.ERROR)
+            exit()
+        # sync folder exist, write the error log and copy to the sync dir
+        else:
+            log_txt = 'config file error, please check config file. make sure the directory exist!'
+            # print(log_txt)
+            log_insert('./files.log', log_txt, logging.ERROR)
+            copy_log_file('./files.log')
             exit()
 
 def log_insert(file, message, level):
@@ -58,6 +91,34 @@ def log_insert(file, message, level):
 
     log_.close()
     logger.removeHandler(log_)
+
+    return
+
+def copy_log_file(file):
+    # copy log file to sync folder
+    # first check if existing log file is there, if exist then delete it, copy the new one. if not exist, copy the new one
+    sync_folder = read_config_file('sync_dir')
+    log_path_sync = sync_folder + '/' + file
+    if (bool(os.path.isfile(log_path_sync))):
+        # remove the old log
+        os.remove(log_path_sync)
+
+        # copy the new one
+        b = shutil.copy2(file, sync_folder)
+        if (bool(os.path.isfile(b))):
+            log_txt = 'files log was successfully copied'
+            log_insert('./files.log', log_txt, logging.INFO)
+        else:
+            log_txt = 'can not copy the files log!'
+            log_insert('./files.log', log_txt, logging.ERROR)
+    else:
+        b = shutil.copy2(file, sync_folder)
+        if (bool(os.path.isfile(b))):
+            log_txt = 'files log was successfully copied'
+            log_insert('./files.log', log_txt, logging.INFO)
+        else:
+            log_txt = 'can not copy the files log!'
+            log_insert('./files.log', log_txt, logging.ERROR)
 
     return
 
@@ -106,6 +167,11 @@ def compress(files):
     log_txt = 'compress and archiving complete!'
     log_insert('./files.log', log_txt, logging.INFO)
 
+    log_txt = 'copy files log to sync folder'
+    log_insert('./files.log', log_txt, logging.INFO)
+
+    copy_log_file('./files.log')
+
     finish()
 
 # def move_file_to_sync(file_name):
@@ -151,6 +217,7 @@ def tlf_logs(tlf_new):
             # there is a same string
             log_txt = 'one of the file is already compressed, please check it'
             log_insert('./files.log', log_txt, logging.WARNING)
+            copy_log_file('./files.log')
 
             return 0 # return false, or finish the program
         else:
@@ -211,6 +278,7 @@ def check_latest_files():
     if not files:
         log_txt = 'there is no backup file today!'
         log_insert('./files.log', log_txt, logging.WARNING)
+        copy_log_file('./files.log')
 
         finish()
     else:
@@ -244,6 +312,7 @@ def check_config_file():
         log_insert('./files.log', log_txt, logging.INFO)
 
         # continue to check latest file
+        validate_config()
         check_latest_files()
     else:
         # generate a config file
@@ -276,6 +345,8 @@ def check_config_file():
         else:
             log_txt = 'error when generate config file!\n'
             log_insert('./files.log', log_txt, logging.ERROR)
+            copy_log_file('./files.log')
+            exit()
 
 def read_config_file(query):
     # this line is for read configuration file. Please set your db toko root dir on the config.ini file.
@@ -304,13 +375,17 @@ def move_final_to_sync(zipName):
         else:
             log_txt = 'compressed file not copied!'
             log_insert('./files.log', log_txt, logging.ERROR)
+            copy_log_file('./files.log')
+            exit()
     else:
         log_txt = 'zipfile not found!'
         log_insert('./files.log', log_txt, logging.ERROR)
+        copy_log_file('./files.log')
+        exit()
 
 
 def main():
-    validate_config()
+    # validate_config()
     check_config_file()
 
 
