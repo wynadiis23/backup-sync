@@ -12,6 +12,7 @@ import logging # logging
  1. Make a log file | in progress > move log file to sync folder, check the old one, if it is there, then delete it, copy the new one
  2. Move compressed file to the sync folder | completed
  3. (optional) create a notification 
+ 4. compress latest file only
 """
 
 if getattr(sys, 'frozen', False):
@@ -285,7 +286,7 @@ def check_latest_files():
     db_dir = read_config_file('dir')
     curr_date = get_time()
     #testing
-    curr_date = "backup-20211116"
+    # curr_date = "backup-20211116"
     log_txt = curr_date
     log_insert('.//files.log', log_txt, logging.INFO)
     print('\ncari file latest:')
@@ -301,7 +302,7 @@ def check_latest_files():
         #append two last elemets
         two_latest_files = []
         two_latest_files.append(files[-1])
-        two_latest_files.append(files[-2])
+        # two_latest_files.append(files[-2])
 
         # check if the tlf log has been created, if not, create it. 
         # if yes then compare it with the latest ltf, if same do not do the archive and compress, if not replace the current content and continue the program
