@@ -13,4 +13,3 @@ def notify_ending(application_path, message, token, t_ch_id):
     bot = telegram.Bot(token=token)
     
     a = bot.sendMessage(chat_id=chat_id, text=message)
-    print(a)

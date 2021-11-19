@@ -36,12 +36,11 @@ def t_messages(back_file, final_zip):
     id = read_config_file('t_notif','s_id')
     t_token = read_config_file('t_notif','t_token')
     t_ch_id = read_config_file('t_notif','t_ch_id')
-    message = f"Message from {id}\nThe backup was completed.\n Here is the detail. Backup file {back_file} compressed as {final_zip}. Please check at your storage"
+    message = f"Message from {id}\nThe backup was completed.\nHere is the detail.\nBackup file {back_file} compressed as {final_zip}.\n\nPlease check at your storage!"
 
-    print(application_path)
     tn.notify_ending(application_path, message, t_token, t_ch_id)
 
-    return
+    finish()
 
 def validate_config():
     config = configparser.ConfigParser()
@@ -202,7 +201,7 @@ def compress(files):
 
     # get value of t notif
     val = read_config_file('t_notif','v')
-    if (val != 0):
+    if (val == 'True'):
         t_messages(files, zipName)
 
     finish()
