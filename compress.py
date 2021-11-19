@@ -6,6 +6,7 @@ import glob
 import configparser
 import shutil # copy file
 import logging # logging
+import t_notif as tn
 
 """
  TODO:
@@ -31,6 +32,16 @@ def finish():
     return
     # input("you can press any key to close this window!")
 
+def t_messages(back_file, final_zip):
+    id = read_config_file('t_notif','s_id')
+    t_token = read_config_file('t_notif','t_token')
+    t_ch_id = read_config_file('t_notif','t_ch_id')
+    message = f"Message from {id}\nThe backup was completed.\n Here is the detail. Backup file {back_file} compressed as {final_zip}. Please check at your storage"
+
+    print(application_path)
+    tn.notify_ending(application_path, message, t_token, t_ch_id)
+
+    return
 
 def validate_config():
     config = configparser.ConfigParser()
@@ -115,7 +126,7 @@ def log_insert(file, message, level):
 def copy_log_file(file):
     # copy log file to sync folder
     # first check if existing log file is there, if exist then delete it, copy the new one. if not exist, copy the new one
-    sync_folder = read_config_file('sync_dir')
+    sync_folder = read_config_file('user_info','sync_dir')
     log_path_sync = sync_folder + '/' + file
     if (bool(os.path.isfile(log_path_sync))):
         # remove the old log
@@ -169,7 +180,6 @@ def compress(files):
     i = 1
     with zipfile.ZipFile(zipName, 'w') as zipF:
         for file in files:
-            print(f'[{i}/{len(files)}]')
             log_txt = f'compressing {file}' 
             # print(log_txt)
             log_insert('.//files.log', log_txt, logging.INFO)
@@ -189,6 +199,11 @@ def compress(files):
     log_insert('.//files.log', log_txt, logging.INFO)
 
     copy_log_file('.//files.log')
+
+    # get value of t notif
+    val = read_config_file('t_notif','v')
+    if (val != 0):
+        t_messages(files, zipName)
 
     finish()
 
@@ -284,7 +299,7 @@ def replace_tlf_log(tlf_new):
 def check_latest_files():
     # files = os.listdir(rootDir)
     # print(files)
-    db_dir = read_config_file('dir')
+    db_dir = read_config_file('user_info','dir')
     curr_date = get_time()
     #testing
     # curr_date = "backup-20211116"
@@ -350,6 +365,12 @@ def check_config_file():
         config.set('user_info', 'dir', input_db_dir)
         config.set('user_info', 'sync_dir', input_sync_dir)
 
+        # setup for telegram notification too
+        config.add_section('t_notif')
+        config.set('t_notif', 'v', '0')
+        config.set('t_notif', 't_token', '')
+        config.set('t_notif', 't_ch_id', '')
+
         # Write the new structure to the new file
         with open(r".//config.ini", 'w') as configfile:
             config.write(configfile)
@@ -366,22 +387,30 @@ def check_config_file():
             copy_log_file('.//files.log')
             exit()
 
-def read_config_file(query):
+def read_config_file(section, item):
     # this line is for read configuration file. Please set your db toko root dir on the config.ini file.
     config = configparser.ConfigParser()
     path_config = os.path.join(application_path, 'config.ini')
     # print(repr(path_config))
     config.read(path_config)
-    user_info = config['user_info']
-    user_config = user_info[query]
-
-    return user_config
+    if (section == 'user_info'):
+        user_info = config[section]
+        user_config = user_info[item]
+        return user_config
+    elif (section == 't_notif'):
+        t_info = config[section]
+        t_info_conf = t_info[item]
+        return t_info_conf
+    else:
+        log_txt = "no such section and item on config file"
+        log_insert('.//files.log', log_txt, logging.ERROR)
+        exit()
 
 def move_final_to_sync(zipName):
     # check zip files if there a
     if (os.path.isfile(f'.//{zipName}')):
         # copy zip file to sync folder
-        sync_folder = read_config_file('sync_dir')
+        sync_folder = read_config_file('user_info','sync_dir')
         b = shutil.copy2(f'.//{zipName}', sync_folder)
         # check if the file was successfully copied
         if (bool(os.path.isfile(b))):
