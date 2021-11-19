@@ -1,7 +1,7 @@
 *.zip
 *.log
 *.spec
-*.ini
+config.ini
 /dist
 /build
 /__pycache__
