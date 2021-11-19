@@ -4,7 +4,7 @@
 block_cipher = None
 
 
-a = Analysis(['D:\\compress\\compress.py'],
+a = Analysis(['D:/compress/compress.py'],
              pathex=[],
              binaries=[],
              datas=[],

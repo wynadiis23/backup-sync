@@ -278,3 +278,9 @@ two latest files are:
 2021-11-18 15:08:41,722 INFO compress and archiving complete!
 2021-11-18 15:08:41,723 INFO copy files log to sync folder
 2021-11-18 15:08:41,730 INFO files log was successfully copied
+2021-11-19 11:17:20,123 INFO config file already exist! continue
+2021-11-19 11:17:20,149 INFO directory D:\MMAL-L1 is present
+2021-11-19 11:17:20,149 INFO directory D:\output\compress\SynologyDrive is present
+2021-11-19 11:17:20,149 INFO backup-20211119
+2021-11-19 11:17:20,149 WARNING there is no backup file today!
+2021-11-19 11:17:20,258 INFO files log was successfully copied

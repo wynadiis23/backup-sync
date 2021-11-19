@@ -28,7 +28,8 @@ else:
 
 
 def finish():
-    input("you can press any key to close this window!")
+    return
+    # input("you can press any key to close this window!")
 
 
 def validate_config():
